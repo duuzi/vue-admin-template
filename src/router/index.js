@@ -22,11 +22,12 @@ import Layout from '../views/layout/Layout'
   }
 **/
 export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/404', component: () => import('@/views/404'), hidden: true },
+  { path: '/login', name: 'login',component: () => import('@/views/login/index'), hidden: true },
+  { path: '/404',name: '404', component: () => import('@/views/404'), hidden: true },
 
   {
     path: '/',
+    name: 'Dashboard',
     component: Layout,
     redirect: '/dashboard',
     name: 'Dashboard',
@@ -36,7 +37,31 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-
+  {
+    path: '/setting',
+    component: Layout,
+    redirect: '/setting',
+    name: 'Setting',
+    meta: { title: '设置', icon: 'setting' },
+    children: [{
+      path: 'role',
+      name: 'Role',
+      component: () => import('@/views/setting/role'),
+      meta: { title: '角色权限管理', icon: '404' }
+    },
+    {
+      path: 'user',
+      name: 'User',
+      component: () => import('@/views/setting/user'),
+      meta: { title: '人员管理', icon: '404' }
+    },
+    {
+      path: 'team',
+      name: 'Team',
+      component: () => import('@/views/setting/team'),
+      meta: { title: '组织架构管理', icon: '404' }
+    }]
+  },
   {
     path: '/example',
     component: Layout,

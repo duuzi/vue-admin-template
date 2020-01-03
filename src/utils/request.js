@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Qs from 'qs'
 import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
@@ -28,7 +29,9 @@ service.interceptors.response.use(
   * code为非20000是抛错 可结合自己业务进行修改
   */
     const res = response.data
-    if (res.code !== 20000) {
+    if(res.code === 401){
+      return authrotyExpired()
+    } else if (res.code !== 20000) {
       Message({
         message: res.message,
         type: 'error',
@@ -63,4 +66,38 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+const authrotyExpired = function () {
+  Message({
+    message: '登录身份过期，请重新登录。',
+    type: 'warning',
+    duration: 5 * 1000
+  })
+  sessionStorage.removeItem('token')
+  sessionStorage.removeItem('user')
+  router.push('/login')
+  return Promise.reject(new Error('身份过期'))
+}
+
+export function post(url, params) {
+  debugger
+  return service({
+    method: 'post',
+    url,
+    data:params,
+    //data: Qs.stringify(params),
+    headers: {
+      //'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    }
+  })
+}
+
+// 返回一个Promise（发送get请求）
+export function get(url, param) {
+  return service({
+    method: 'get',
+    url,
+    param
+  })
+}
+
+export default { service, get, post }

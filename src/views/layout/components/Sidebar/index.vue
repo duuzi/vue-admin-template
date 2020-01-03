@@ -15,21 +15,46 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters,mapState } from 'vuex'
 import SidebarItem from './SidebarItem'
 
 export default {
   components: { SidebarItem },
   computed: {
     ...mapGetters([
+      'menulist',
       'sidebar'
     ]),
+    ...mapState({
+      menuNames(state) {
+        const menus = state.user.menulist.map(_ => {
+          return _.PermissionName
+        });
+        return menus
+      },
+    }),
     routes() {
-      return this.$router.options.routes
+      let ary = this.$router.options.routes
+      return this.filterMenu(ary)
+      //return this.$router.options.routes;
     },
     isCollapse() {
       return !this.sidebar.opened
     }
-  }
+  },
+  methods:{
+    filterMenu(routerlist) {
+      const mns = this.menuNames
+      //菜单筛选
+      let result = routerlist.filter(_=>this.menuNames.includes(_.name))
+      result.forEach(item=>{
+        if(item.children&&item.children.length){
+          item.children = this.filterMenu(item.children)
+          //item.children = item.children.filter(_=>mns.includes(_.name))
+        }
+      })
+      return result
+    },
+  },
 }
 </script>
