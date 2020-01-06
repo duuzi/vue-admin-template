@@ -32,12 +32,14 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
+    name: 'login',
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
 
   {
+    name: '404',
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
@@ -45,6 +47,7 @@ export const constantRoutes = [
 
   {
     path: '/',
+    name: 'Dashboard',
     component: Layout,
     redirect: '/dashboard',
     children: [{
@@ -54,7 +57,31 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/setting',
+    component: Layout,
+    redirect: '/setting',
+    name: 'Setting',
+    meta: { title: '设置', icon: 'setting' },
+    children: [{
+      path: 'role',
+      name: 'Role',
+      component: () => import('@/views/setting/role'),
+      meta: { title: '角色权限管理', icon: '404' }
+    },
+    {
+      path: 'user',
+      name: 'User',
+      component: () => import('@/views/setting/user'),
+      meta: { title: '人员管理', icon: '404' }
+    },
+    {
+      path: 'team',
+      name: 'Team',
+      component: () => import('@/views/setting/team'),
+      meta: { title: '组织架构管理', icon: '404' }
+    }]
+  },
   {
     path: '/example',
     component: Layout,
@@ -162,7 +189,36 @@ export const constantRoutes = [
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
+export const asyncRoutes = [
+  {
+    path: '/setting',
+    component: Layout,
+    redirect: '/setting',
+    name: 'Setting',
+    meta: { title: '设置', icon: 'setting' },
+    children: [{
+      path: 'role',
+      name: 'Role',
+      component: () => import('@/views/setting/role'),
+      meta: { title: '角色权限管理', icon: '404' }
+    },
+    {
+      path: 'user',
+      name: 'User',
+      component: () => import('@/views/setting/user'),
+      meta: { title: '人员管理', icon: '404' }
+    },
+    {
+      path: 'team',
+      name: 'Team',
+      component: () => import('@/views/setting/team'),
+      meta: { title: '组织架构管理', icon: '404' }
+    }]
+  },
 
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),

@@ -59,6 +59,15 @@ div:focus {
   }
 }
 
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    //vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
 // main-container global css
 .app-container {
   padding: 20px;

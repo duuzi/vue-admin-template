@@ -1,15 +1,29 @@
-import { login, logout, getInfo } from '@/api/user'
+// import { login, logout, getInfo } from '@/api/user'
+import user_api from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
   name: '',
-  avatar: ''
+  avatar: '',
+  menulist: [],
+  profile: {},
 }
 
 const mutations = {
+  SET_LOGIN_USER: (state, user) => {
+    state.user = user
+  },
+  SET_MENU: (state, permissions) => {
+    state.menulist = permissions
+  },
   SET_TOKEN: (state, token) => {
+    if (token) {
+      sessionStorage.setItem('token', token)
+    } else {
+      sessionStorage.removeItem('token')
+    }
     state.token = token
   },
   SET_NAME: (state, name) => {
@@ -25,9 +39,16 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      user_api.login({ username: username.trim(), password: password }).then(response => {
+        debugger
         const { data } = response
+        //存储用户信息
+        sessionStorage.setItem('user', JSON.stringify(data.user))
+        commit('SET_LOGIN_USER', data.user)
+        commit('SET_MENU', data.user.Permissions)
         commit('SET_TOKEN', data.token)
+        commit('SET_NAME', data.user.name)
+        commit('SET_AVATAR', data.user.avatar)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -39,30 +60,45 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      debugger
+      setTimeout(() => {
+        var userInfo = sessionStorage.getItem('user');
+        //if (userInfo && state.user) return;
+        if (userInfo) {
+          const u = JSON.parse(userInfo)
+          commit('SET_LOGIN_USER', u)
+          commit('SET_MENU', u.Permissions)
+          commit('SET_NAME', u.name)
+          commit('SET_AVATAR', u.avatar)
+        };
+        resolve({ bool: true, userInfo })
+      }, 0);
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+      // getInfo(state.token).then(response => {
+      //   const { data } = response
 
-        const { name, avatar } = data
+      //   if (!data) {
+      //     reject('Verification failed, please Login again.')
+      //   }
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      //   const { name, avatar } = data
+
+      //   commit('SET_NAME', name)
+      //   commit('SET_AVATAR', avatar)
+      //   resolve(data)
+      // }).catch(error => {
+      //   reject(error)
+      // })
     })
   },
 
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      user_api.logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         removeToken()
+        sessionStorage.removeItem('user')
         resetRouter()
         resolve()
       }).catch(error => {
@@ -76,6 +112,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       removeToken()
+      sessionStorage.removeItem('user')
       resolve()
     })
   }
