@@ -94,7 +94,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import setting_api from "@/api/sysSetting";
+import setting_api from "@/api/setting";
 import { deepClone } from "@/utils";
 export default {
   name: "User",
