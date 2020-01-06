@@ -85,3 +85,13 @@ a:hover {
 .pagination-container {
   margin-top: 30px;
 }
+
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    //vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}

@@ -41,7 +41,7 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        user_api.login(username, userInfo.password).then(response => {
+        user_api.login({UserName:username, Password:userInfo.password}).then(response => {
           const data = response.data
           sessionStorage.setItem('user', JSON.stringify(data.user))
           setToken(data.token)
