@@ -118,7 +118,7 @@ export function get(url, param) {
   return service({
     method: 'get',
     url,
-    param
+    params:param
   })
 }
 
