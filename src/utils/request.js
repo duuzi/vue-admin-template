@@ -86,7 +86,7 @@ export function post(url, params) {
     //data:params,
     data: Qs.stringify(params),
     headers: {
-      //'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
   })
 }
@@ -96,7 +96,7 @@ export function get(url, param) {
   return service({
     method: 'get',
     url,
-    param
+    params:param
   })
 }
 
